@@ -1,6 +1,3 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
+import "@/shared/styles/globals.scss";
+import "@/shared/styles/_root.scss";
+export { Application as default } from "../application";

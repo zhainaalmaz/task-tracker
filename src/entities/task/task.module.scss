@@ -1,0 +1,29 @@
+.container {
+  height: auto;
+  background: #876d6d;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  margin: 15px 0px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  & button {
+    background: transparent;
+    font-weight: 600;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 8px;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}
