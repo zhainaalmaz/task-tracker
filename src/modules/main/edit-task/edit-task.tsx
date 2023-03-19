@@ -1,15 +1,39 @@
 import React, { useState } from "react";
-import { addTask, editTask } from "@/store/tasksSlice";
+import { addTask, editTask, ITask } from "@/store/tasksSlice";
 import styles from "./edit-task.module.scss";
 import { useAppDispatch } from "@/store/store";
 
-const EditForm = ({ onClose, task }: any) => {
+interface IEditFormProps {
+  onClose: () => void;
+  task: ITask;
+}
+const EditForm: React.FC<IEditFormProps> = ({ onClose, task }) => {
   const dispatch = useAppDispatch();
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
-  const [error, setError] = useState(false);
+  const [title, setTitle] = useState<string>(task.title);
+  const [description, setDescription] = useState<string>(task.description);
+  const [error, setError] = useState<boolean>(false);
 
-  const handleSubmit = (event: any) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+  };
+
+  const handleDescriptionChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setDescription(event.target.value);
+  };
+
+  const handleBlur = (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (event.target.value.trim() === "") {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (title.trim() !== "" && description.trim() !== "") {
@@ -28,14 +52,6 @@ const EditForm = ({ onClose, task }: any) => {
     }
   };
 
-  const handleBlur = (event: any) => {
-    if (event.target.value.trim() === "") {
-      setError(true);
-    } else {
-      setError(false);
-    }
-  };
-
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.form_title}>
@@ -45,7 +61,7 @@ const EditForm = ({ onClose, task }: any) => {
           id="title"
           placeholder="Enter a task title"
           value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          onChange={handleTitleChange}
           onBlur={handleBlur}
         />
       </div>
@@ -58,7 +74,7 @@ const EditForm = ({ onClose, task }: any) => {
           id="description"
           placeholder="Enter a task description"
           value={description}
-          onChange={(event) => setDescription(event.target.value)}
+          onChange={handleDescriptionChange}
           onBlur={handleBlur}
         />
       </div>

@@ -1,3 +1,4 @@
+@import "@/shared/styles/_root.scss";
 .form {
   display: flex;
   flex-direction: column;
@@ -48,7 +49,7 @@
   & button {
     height: 42px;
     padding: 0px 14px;
-    background: #0067a3;
+    background: $primaryColor;
     color: white;
     font-size: 16px;
     border-radius: 8px;

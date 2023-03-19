@@ -1,3 +1,4 @@
+@import "@/shared/styles/_root.scss";
 .content {
   background-color: #e4e4e4;
   height: 100%;
@@ -8,7 +9,7 @@
 
   .content__block {
     border-radius: 8px;
-    background-color: #0067a3;
+    background-color: $primaryColor;
     padding: 6px 10px;
     display: flex;
     justify-content: space-between;

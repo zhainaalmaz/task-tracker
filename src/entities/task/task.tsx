@@ -1,118 +1,79 @@
+import React, { useMemo, useState } from "react";
 import EditForm from "@/modules/main/edit-task/edit-task";
-import { Modal } from "@/shared/ui";
+
+import { Button, Modal } from "@/shared/ui";
 import { useAppDispatch } from "@/store/store";
 import { changeTaskStatus, ITask, TaskStates } from "@/store/tasksSlice";
-import React, { useMemo, useState } from "react";
 import styles from "./task.module.scss";
+import { getTaskStatusStyles } from "@/shared/lib";
 
-interface IProps {
+interface TaskProps {
   task: ITask;
 }
 
-export const Task = ({ task }: any) => {
+export const Task: React.FC<TaskProps> = ({ task }) => {
   const dispatch = useAppDispatch();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleClick = (status: TaskStates) => {
+  const { backgroundColor, color, buttonLabel, nextStep } = useMemo(
+    () => getTaskStatusStyles(task.status),
+    [task.status]
+  );
+
+  const handleTaskClick = (status: TaskStates) => {
     dispatch(changeTaskStatus({ id: task.id, status }));
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleTaskModal = () => {
-    setIsOpen(!isOpen);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
-  const taskStatus = useMemo(() => {
-    let backgroundColor;
-    let buttonLabel;
-    let nextStep: TaskStates;
-    let color;
+  const canEditTask = task.status === "new" || task.status === "inProgress";
 
-    switch (task.status) {
-      case "new":
-        backgroundColor = "white";
-        color = "black";
-        buttonLabel = "На работу";
-        nextStep = "inProgress";
-        break;
-      case "inProgress":
-        backgroundColor = "#02456b";
-        color = "white";
-        buttonLabel = "Завершить";
-        nextStep = "completed";
-        break;
-      case "completed":
-        backgroundColor = "green";
-        color = "white";
-        buttonLabel = null;
-        nextStep = null;
-        break;
-      case "cancelled":
-        backgroundColor = "red";
-        color = "white";
-        buttonLabel = "Вернуть";
-        nextStep = "new";
-        break;
-      default:
-        backgroundColor = "white";
-        color = "black";
-        buttonLabel = null;
-        nextStep = "inProgress";
-    }
-    return { backgroundColor, buttonLabel, nextStep, color };
-  }, [task]);
+  const containerStyles = { backgroundColor, color };
 
   return (
-    <div
-      className={styles.container}
-      style={{
-        backgroundColor: taskStatus.backgroundColor,
-        color: taskStatus.color,
-      }}
-    >
+    <div className={styles.container} style={containerStyles}>
       <h3 className={styles.taskTitle}>Тема: {task.title}</h3>
       <p className={styles.taskDescription}>Описание: {task.description}</p>
       <p> Создан: {task.createdAt}</p>
-      <div>
-        {task.status !== "completed" && (
-          <div className={styles.buttons}>
-            <button
-              style={{
-                color: taskStatus.color,
-                border: `2px solid ${taskStatus.color}`,
-              }}
-              onClick={() => handleClick(taskStatus.nextStep)}
-            >
-              {taskStatus.buttonLabel}
-            </button>
-            {task.status !== "cancelled" && (
-              <button
-                style={{
-                  color: taskStatus.color,
-                  border: `2px solid ${taskStatus.color}`,
-                }}
-                onClick={() => handleClick("cancelled")}
-              >
-                Отменить
-              </button>
-            )}
-            <button
-              style={{
-                color: taskStatus.color,
-                border: `2px solid ${taskStatus.color}`,
-              }}
-              onClick={toggleTaskModal}
-            >
-              Edit
-            </button>
-          </div>
-        )}
-      </div>
-      {isOpen && (
-        <Modal onClose={toggleTaskModal}>
-          <EditForm onClose={toggleTaskModal} task={task} />
+      {task.completedAt && <p> Завершен: {task.completedAt}</p>}
+      {task.cancelledAt && <p> Отменен: {task.cancelledAt}</p>}
+
+      {task.status !== "completed" && (
+        <div className={styles.buttons}>
+          <Button
+            label={buttonLabel}
+            color={color}
+            borderColor={color}
+            onClick={() => handleTaskClick(nextStep)}
+          />
+          {task.status !== "cancelled" && (
+            <Button
+              label="Отменить"
+              color={color}
+              borderColor={color}
+              onClick={() => handleTaskClick("cancelled")}
+            />
+          )}
+          {canEditTask && (
+            <Button
+              label="Edit"
+              color={color}
+              borderColor={color}
+              onClick={toggleModal}
+            />
+          )}
+        </div>
+      )}
+
+      {isModalOpen && (
+        <Modal onClose={toggleModal}>
+          <EditForm onClose={toggleModal} task={task} />
         </Modal>
       )}
     </div>
   );
 };
+
+export default Task;

@@ -1,4 +1,3 @@
-
 type Func<T extends any[], R> = (...a: T) => R;
 
 function compose(): <R>(a: R) => R;

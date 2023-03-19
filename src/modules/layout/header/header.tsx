@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import { useRouter } from "next/router";
 import styles from "./header.module.scss";
-import TaskForm from "@/modules/main/create-task/create-task";
 import { Modal } from "@/shared/ui";
+import { TaskForm } from "@/modules/main/create-task";
 
-export const Header = () => {
-  const [isOpen, setIsOpen] = useState(false);
+type HeaderProps = {};
+
+export const Header: React.FC<HeaderProps> = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleTaskModal = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <>
+    <React.Fragment>
       <div className={styles.wrapper}>
         <h1 className={styles.logo}>Logo</h1>
         <button className={styles.button} onClick={toggleTaskModal}>
@@ -24,6 +25,6 @@ export const Header = () => {
           <TaskForm onClose={toggleTaskModal} />
         </Modal>
       )}
-    </>
+    </React.Fragment>
   );
 };

@@ -3,11 +3,9 @@ import { TaskList } from "@/modules/main/task-list";
 
 function Home() {
   return (
-    <>
-      <Layout>
-        <TaskList />
-      </Layout>
-    </>
+    <Layout>
+      <TaskList />
+    </Layout>
   );
 }
 
